@@ -16,16 +16,23 @@ export class App extends Component {
     isLoading: false,
     error: null,
   };
-  async componentDidUpdate(prevProps, prevState) {
+  async componentDidUpdate(_, prevState) {
     const { searcheQuery, page } = this.state;
     if (prevState.searcheQuery !== searcheQuery || prevState.page !== page) {
       this.setState({ isLoading: true });
       try {
         const data = await fetchData(searcheQuery, page);
-        if (data.length === 0) {
-          return;
-        } else if (data.totalHits === 0) {
+
+        if (data.totalHits === 0) {
           toast.warning('Not a valid request. Please enter a valid value!', {
+            autoClose: 1000,
+            hideProgressBar: true,
+            theme: 'colored',
+          });
+          return;
+        }
+        if (page === 1) {
+          toast.success(`Hooray! We found ${data.total} images.`, {
             autoClose: 1000,
             hideProgressBar: true,
             theme: 'colored',
@@ -33,13 +40,8 @@ export class App extends Component {
         }
         this.setState(prevState => ({
           dataImages: [...prevState.dataImages, ...data.hits],
-          total: data.total,
+          total: data.totalHits,
         }));
-        toast.success(`Hooray! We found ${data.total} images.`, {
-          autoClose: 1000,
-          hideProgressBar: true,
-          theme: 'colored',
-        });
       } catch (error) {
         this.setState({ error });
         toast.error(error.message);
@@ -59,13 +61,15 @@ export class App extends Component {
     // page: prevState.page + 1,
   };
   render() {
-    const { dataImages, isLoading } = this.state;
+    const { dataImages, isLoading, total } = this.state;
     return (
       <>
         <Searchbar onSubmit={this.handleFormSubmit} />
         {dataImages.length > 0 && <ImageGallery images={dataImages} />}
         {isLoading && <Loader />}
-        {dataImages.length >= 12 && <Button onClick={this.buttonLoadMore} />}
+        {!isLoading && total !== dataImages.length && (
+          <Button onClick={this.buttonLoadMore} />
+        )}
         <ToastContainer
           position="top-right"
           autoClose={5000}
