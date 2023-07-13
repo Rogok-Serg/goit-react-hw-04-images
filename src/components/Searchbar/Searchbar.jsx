@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
 import css from './Searchbar.module.css';
 import { toast } from 'react-toastify';
 import PropTypes from 'prop-types';
+import { useState } from 'react';
 
-export class Searchbar extends Component {
-  state = {
-    searcheQuery: '',
+export const Searchbar = ({ onSubmit }) => {
+  const [searcheQuery, setSearcheQuery] = useState('');
+
+  const handleImageGhange = event => {
+    setSearcheQuery(event.target.value.toLowerCase());
   };
-  handleImageGhange = event => {
-    this.setState({
-      searcheQuery: event.target.value.toLowerCase(),
-    });
-  };
-  handleSubmit = event => {
+
+  const handleSubmit = event => {
     event.preventDefault();
-    if (this.state.searcheQuery.trim() === '') {
+    if (searcheQuery.trim() === '') {
       toast.info('Please enter your query in the search field', {
         autoClose: 1000,
         hideProgressBar: true,
@@ -22,28 +20,71 @@ export class Searchbar extends Component {
       });
       return;
     }
-    this.props.onSubmit(this.state.searcheQuery);
-    this.setState({ searcheQuery: '' });
+    onSubmit(searcheQuery);
+    setSearcheQuery('');
   };
-  render() {
-    return (
-      <header className={css.searchbar}>
-        <form onSubmit={this.handleSubmit} className={css.form}>
-          <button type="submit" className={css.button}>
-            Search
-          </button>
-          <input
-            className={css.input}
-            value={this.state.searcheQuery}
-            onChange={this.handleImageGhange}
-            type="text"
-            autoComplete="off"
-            autoFocus
-            placeholder="Search images and photos"
-          />
-        </form>
-      </header>
-    );
-  }
-}
+
+  return (
+    <header className={css.searchbar}>
+      <form onSubmit={handleSubmit} className={css.form}>
+        <button type="submit" className={css.button}>
+          Search
+        </button>
+        <input
+          className={css.input}
+          value={searcheQuery}
+          onChange={handleImageGhange}
+          type="text"
+          autoComplete="off"
+          autoFocus
+          placeholder="Search images and photos"
+        />
+      </form>
+    </header>
+  );
+};
+
 Searchbar.propTypes = { onSubmit: PropTypes.func.isRequired };
+// export class oldSearchbar extends Component {
+//   state = {
+//     searcheQuery: '',
+//   };
+//   handleImageGhange = event => {
+//     this.setState({
+//       searcheQuery: event.target.value.toLowerCase(),
+//     });
+//   };
+//   handleSubmit = event => {
+//     event.preventDefault();
+//     if (this.state.searcheQuery.trim() === '') {
+//       toast.info('Please enter your query in the search field', {
+//         autoClose: 1000,
+//         hideProgressBar: true,
+//         theme: 'colored',
+//       });
+//       return;
+//     }
+//     this.props.onSubmit(this.state.searcheQuery);
+//     this.setState({ searcheQuery: '' });
+//   };
+//   render() {
+//     return (
+//       <header className={css.searchbar}>
+//         <form onSubmit={this.handleSubmit} className={css.form}>
+//           <button type="submit" className={css.button}>
+//             Search
+//           </button>
+//           <input
+//             className={css.input}
+//             value={this.state.searcheQuery}
+//             onChange={this.handleImageGhange}
+//             type="text"
+//             autoComplete="off"
+//             autoFocus
+//             placeholder="Search images and photos"
+//           />
+//         </form>
+//       </header>
+//     );
+//   }
+// }
