@@ -17,8 +17,8 @@ export const App = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
+    if (!searcheQuery) return;
     const imagesApi = async () => {
-      if (!searcheQuery) return;
       try {
         setIsLoading(true);
         const data = await fetchData(searcheQuery, page);
