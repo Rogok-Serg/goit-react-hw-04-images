@@ -41,7 +41,7 @@ export const App = () => {
         setDataImages(prevState => [...prevState, ...data.hits]);
         setTotal(data.totalHits);
       } catch (error) {
-        setError(error);
+        setError(error.message);
         toast.error(error.message);
       } finally {
         setIsLoading(false);
@@ -65,6 +65,11 @@ export const App = () => {
   return (
     <>
       <Searchbar onSubmit={handleFormSubmit} />
+      {!error && (
+        <div>
+          <p>{error}</p>
+        </div>
+      )}
       {dataImages.length > 0 && <ImageGallery images={dataImages} />}
       {isLoading && <Loader />}
       {!isLoading && total !== dataImages.length && (
