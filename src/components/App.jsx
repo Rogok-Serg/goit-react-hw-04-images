@@ -18,9 +18,9 @@ export const App = () => {
 
   useEffect(() => {
     const imagesApi = async () => {
-      setIsLoading(true);
+      if (!searcheQuery) return;
       try {
-        if (!searcheQuery) return;
+        setIsLoading(true);
         const data = await fetchData(searcheQuery, page);
 
         if (data.totalHits === 0) {
